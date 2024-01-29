@@ -1,0 +1,51 @@
+I have the attached openAI API logic and want to refactor it for: 1) not using the embeddings process and instead just accepting user_input query from API and then sending that to the API. Then parsing the response and extracting up to 10 features from the openAI API response (returning these 10 features with their informations to the frontend).
+
+I have a question.
+
+What does "10 feature " mean?
+
+
+The point related to this is: based on the user input query (eg: 'tell me which features are related to momentum stock trading') the openAI API will often return multiple features. So the script must be able to parse these multiple features and then store them into the db table correctly
+
+You mean your old script used embeding process?
+
+
+I don't need to embed 10 features and just return 10 features from openAI , with user information to fronend.
+Am I right?
+
+
+I don't follow your point
+
+There is no need for embedding anything
+
+just using the openAI api by getting the user input query from frontend via flask api (then sending to chatCompletion openAI)
+
+
+all make sense.
+
+I will remove embedding part and reorganize it.
+
+
+
+
+
+would you prefere keeping the current table structure 'user_query' and 'parsed_pages' or merge them together?
+
+We can make it one table that has the user_id, user_query, then the features data. Eg:
+
+
+
+feature_from_query = Table('feature_from_query', metadata,
+Column('id', Integer, primary_key=True),
+Column('user_id', Text,), # Assuming 'users' is the users table
+Column('query', Text),
+Column('feature_name', Text),
+Column('feature_definition', Text),
+Column('feature_formula', Text),
+Column('feature_parameters', JSON),
+
+each of these data types is same as current script
+
+1A, 1B, 1C, 1D are each returned from the OpenAI chatcompletion API
+
+it is just like using chatGPT. We ask in the query: 'provide me 10 features related to 'this topic' and provide them following this structure 1A, 1B, 1C, 1D and number each one incrementally (so feature #2 is 2A, 2B..feature #3 is 3A, feature #4 is 4A, feature #5 is 5A... feature #10 is 10A etc). So the script needs to parse each of the features in the api response and then input to the table)
